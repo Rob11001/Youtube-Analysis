@@ -5,7 +5,7 @@ TODO: Setup Node.js environment
 125 shows.
 10000 quota per day.
 
-## Collezione dei dati
+## Data Collection
 First, we collected the 125 top children's shows based on [Ranker](https://www.ranker.com/crowdranked-list/my-favorite-cartoons-of-all-time?ref=search), a website in which users can rank shows and films, this list in particular has 3.2m votes
 from 194.0k voters and was recently updated.
 
