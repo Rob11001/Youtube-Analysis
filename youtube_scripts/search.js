@@ -30,66 +30,59 @@ extractData = async () => {
   for (let i = showCounter; i < shows.length; i++) {
     const showName = shows[i];
   
-    const response = await instance.request({
-      url: 'search',
-      params: {
-        part: "snippet",
-        maxResults: 50,
-        q: showName,
-        regionCode: 'US',
-        type: 'video'
-      }
-    });
-  
-    if (response.status !== 200) {
-      fs.writeFileSync(historyFilePath, JSON.stringify({showCounter: i}, null, 2));
-      console.log(response);
-      break;
-    }
-  
-    showsData[showName] = [];
-  
-    let count = 0;
-    let wentBad = false;
-    for (let item of response.data.items) {
+    try {
       const response = await instance.request({
-        url: 'videos',
+        url: 'search',
         params: {
-          part: "snippet,statistics",
-          id: item.id.videoId
+          part: "snippet",
+          maxResults: 50,
+          q: showName,
+          regionCode: 'US',
+          type: 'video'
         }
       });
-  
-      if (response.status !== 200) {
-        fs.writeFileSync(historyFilePath, JSON.stringify({showCounter: i}, null, 2));
-        console.log(response);
-        wentBad = true;
-        break;
-      }
+
+      tempShows = [];
+
+      let count = 0;
+      for (let item of response.data.items) {
+        const response = await instance.request({
+          url: 'videos',
+          params: {
+            part: "snippet,statistics",
+            id: item.id.videoId
+          }
+        });
+      
+        const video = response.data.items[0];
+        if (video.statistics.commentCount > 0) {
+          tempShows.push({
+            id: video.id,
+            title: video.snippet.title,
+            publishedAt: video.snippet.publishedAt,
+            views: video.statistics.viewCount,
+            likes: video.statistics.likeCount,
+            dislikes: video.statistics.dislikeCount,
+            comments: video.statistics.commentCount
+          })
+          count++;
+        }
     
-      const video = response.data.items[0];
-      if (video.statistics.commentCount > 0) {
-        showsData[showName].push({
-          id: video.id,
-          title: video.snippet.title,
-          publishedAt: video.snippet.publishedAt,
-          views: video.statistics.viewCount,
-          likes: video.statistics.likeCount,
-          dislikes: video.statistics.dislikeCount,
-          comments: video.statistics.commentCount
-        })
-        count++;
+        if (count === 10)
+          break;
+      
       }
-  
-      if (count === 10)
-        break;
-    
-    }
-  
-    if (wentBad)
+
+      showsData[showName] = tempShows;
+      
+      console.log(`Show ${showName} data collected - #videos: ${count}`);
+
+    } catch (err) {
+      fs.writeFileSync(historyFilePath, JSON.stringify({showCounter: i}, null, 2));
+      console.log(err.message);
       break;
-    
-    console.log(`Show ${showName} data collected - #videos: ${count}`)
+    }
+   
   }
 }
 
@@ -116,7 +109,10 @@ extractData()
     })
   });
 
-  fs.close(fd, (err) => console.log(err));
+  fs.close(fd, (err) => {
+    if (err)
+      console.log(err);
+  });
 
   })
   .catch(err => console.log(err));
