@@ -1,0 +1,15 @@
+{
+  "name": "youtube-analysis",
+  "version": "1.0.0",
+  "scripts": {
+    "search": "node youtube_scripts/search.js"
+  },
+  "repository": "https://github.com/emdant/Youtube-Analysis.git",
+  "author": "Marco <30555419+emdant@users.noreply.github.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.21.0",
+    "dotenv": "^8.2.0"
+  }
+}
