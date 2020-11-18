@@ -11,7 +11,6 @@ let history;
 try {
   history = require(historyFilePath);
 } catch (err) {
-  console.log(err);
   history = null;
 }
 
@@ -56,7 +55,7 @@ extractData = async () => {
         });
       
         const video = response.data.items[0];
-        if (video.statistics.commentCount > 0) {
+        if (video.statistics.commentCount > 0 && video.statistics.viewCount && video.statistics.likeCount && video.statistics.dislikeCount && video.statistics.commentCount) {
           tempShows.push({
             id: video.id,
             title: video.snippet.title,
@@ -79,7 +78,7 @@ extractData = async () => {
       console.log(`Show ${showName} data collected - #videos: ${count}`);
 
     } catch (err) {
-      fs.writeFileSync(historyFilePath, JSON.stringify({showCounter: i}, null, 2)); 
+      fs.writeFileSync(`./youtube_scripts/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2)); 
       console.log(err.message);
       break;
     }
@@ -100,11 +99,13 @@ extractData()
   }
   
   
+  const keys = ['id', 'title', 'publishedAt','views', 'likes', 'dislikes', 'comments'];
+
   const fd = fs.openSync(datasetCsvFilePath, 'a');
-  Object.keys(showsData).forEach(key => {
+    Object.keys(showsData).forEach(key => {
     showsData[key].forEach(videoInfo => {
-      let line = Object.values(videoInfo).reduce((string, current) => {
-        return string += `,${current}`;
+      let line = keys.reduce((string, current) => {
+        return string += `;${(videoInfo[current] == undefined) ? null : videoInfo[current]}`;
       }, key);
       fs.writeSync(fd, `${line}\n`); 
     })
@@ -114,6 +115,7 @@ extractData()
     if (err)
       console.log(err);
   });
+
 
   })
   .catch(err => console.log(err));
