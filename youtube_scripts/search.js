@@ -3,14 +3,15 @@ const fs = require('fs');
 require('dotenv').config();
 
 const dataApiKey = process.env.DATA_API_KEY;
-const historyFilePath = './youtube_scripts/history.json';
-const datasetJsonFilePath = './youtube_scripts/dataset.json';
+const historyFilePath = './history.json';
+const datasetJsonFilePath = './dataset.json';
 const datasetCsvFilePath = './youtube_scripts/dataset.csv';
 
 let history;
 try {
   history = require(historyFilePath);
 } catch (err) {
+  console.log(err);
   history = null;
 }
 
@@ -78,7 +79,7 @@ extractData = async () => {
       console.log(`Show ${showName} data collected - #videos: ${count}`);
 
     } catch (err) {
-      fs.writeFileSync(historyFilePath, JSON.stringify({showCounter: i}, null, 2));
+      fs.writeFileSync(historyFilePath, JSON.stringify({showCounter: i}, null, 2)); 
       console.log(err.message);
       break;
     }
@@ -93,9 +94,9 @@ extractData()
   try {
     dataset = require(datasetJsonFilePath);
     Object.keys(showsData).forEach(key => dataset[key] = showsData[key]);
-    fs.writeFileSync(datasetJsonFilePath, JSON.stringify(dataset, null, 2));
+    fs.writeFileSync(`./youtube_scripts/${datasetJsonFilePath}`, JSON.stringify(dataset, null, 2));
   } catch (err) {
-    fs.writeFileSync(datasetJsonFilePath, JSON.stringify(showsData, null, 2));
+    fs.writeFileSync(`./youtube_scripts/${datasetJsonFilePath}`, JSON.stringify(showsData, null, 2));
   }
   
   
@@ -116,3 +117,4 @@ extractData()
 
   })
   .catch(err => console.log(err));
+  
