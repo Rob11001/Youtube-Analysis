@@ -16,7 +16,7 @@ try {
 
 let showCounter = history === null ? 0 : history.showCounter;
 
-const shows = fs.readFileSync('./topShows.txt', {encoding: 'utf-8'}).replace(/\r?\n$/, '').split(/\r?\n/);
+const shows = fs.readFileSync('./data/topShows.txt', {encoding: 'utf-8'}).replace(/\r?\n$/, '').split(/\r?\n/);
 const showsData = {};
 
 const instance = axios.create({
@@ -31,51 +31,78 @@ extractData = async () => {
     const showName = shows[i];
   
     try {
-      const response = await instance.request({
-        url: 'search',
-        params: {
-          part: "snippet",
-          maxResults: 50,
-          q: showName,
-          regionCode: 'US',
-          type: 'video'
-        }
-      });
-
-      tempShows = [];
-
       let count = 0;
-      for (let item of response.data.items) {
+      let nextPageToken = undefined;
+      while(count < 10) {
+      
         const response = await instance.request({
-          url: 'videos',
+          url: 'search',
           params: {
-            part: "snippet,statistics",
-            id: item.id.videoId
+            part: "snippet",
+            maxResults: 50,
+            q: showName,
+            regionCode: 'US',
+            type: 'video',
+            nextPageToken: nextPageToken,
           }
         });
-      
-        const video = response.data.items[0];
-        if (video.statistics.commentCount > 0 && video.statistics.viewCount && video.statistics.likeCount && video.statistics.dislikeCount && video.statistics.commentCount) {
-          tempShows.push({
-            id: video.id,
-            title: video.snippet.title,
-            publishedAt: video.snippet.publishedAt,
-            views: video.statistics.viewCount,
-            likes: video.statistics.likeCount,
-            dislikes: video.statistics.dislikeCount,
-            comments: video.statistics.commentCount
-          })
-          count++;
-        }
-    
-        if (count === 10)
-          break;
-      
-      }
 
-      showsData[showName] = tempShows;
+        nextPageToken = response.data.nextPageToken;
+
+        tempShows = [];
+
+        for (let item of response.data.items) {
+          const response = await instance.request({
+            url: 'videos',
+            params: {
+              part: "snippet,statistics",
+              id: item.id.videoId
+            }
+          });
+        
+          const video = response.data.items[0];
+          if (video.statistics.commentCount > 0 && video.statistics.viewCount && video.statistics.likeCount && video.statistics.dislikeCount && video.statistics.commentCount) {
+            
+            try {
+              
+              const response = await instance.request({
+                url: 'commentThreads',
+                params: {
+                part: "replies",
+                maxResults: 100,
+                videoId: video.id,
+                }
+              });
+              
+              tempShows.push({
+                id: video.id,
+                title: video.snippet.title,
+                publishedAt: video.snippet.publishedAt,
+                views: video.statistics.viewCount,
+                likes: video.statistics.likeCount,
+                dislikes: video.statistics.dislikeCount,
+                comments: video.statistics.commentCount
+              })
+              count++;
+             
+            } catch (err) {
+              const error = err.response.data.error;
+              if(error.code == 403 && !error.message.includes('disabled comments')) {
+                throw err;
+              }
+            }
+
+          }
       
-      console.log(`Show ${showName} data collected - #videos: ${count}`);
+          if (count === 10)
+            break;
+        
+        }
+
+        showsData[showName] = tempShows;
+        
+        console.log(`Show ${showName} data collected - #videos: ${count}`);
+      }
 
     } catch (err) {
       fs.writeFileSync(`./videos/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2)); 
