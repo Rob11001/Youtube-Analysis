@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const datasetJsonFilePath = './dataset.json';
-const datasetCsvFilePath = './youtube_scripts/dataset.csv';
+const datasetCsvFilePath = './videos/dataset.csv';
 
 const showsData = require(datasetJsonFilePath);
 const keys = ['id', 'title', 'publishedAt','views', 'likes', 'dislikes', 'comments'];

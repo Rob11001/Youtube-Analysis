@@ -2,8 +2,8 @@
   "name": "youtube-analysis",
   "version": "1.0.0",
   "scripts": {
-    "search": "node youtube_scripts/search.js",
-    "videos-analysis": "node youtube_scripts/videos_analysis.js"
+    "search": "node videos/search.js",
+    "videos-analysis": "node videos/videos_analysis.js"
   },
   "repository": "https://github.com/emdant/Youtube-Analysis.git",
   "author": "Marco <30555419+emdant@users.noreply.github.com>",

@@ -14,10 +14,16 @@ For the remaining 30 shows, we used the [OMDb API](http://www.omdbapi.com/) a RE
 The age group for the last 12 shows was looked up manually on the web. 
 
 ## Phase 1
-125 list search to get the 10 top videos. (100 quota per list)
+We used Youtube Data API (Search resource type) to collect the data of the first 10 videos for each show. However some videos did not have comments attached to it, or the comments were disabled, so we decided to collect the 50 most relevant videos and take the first 10 that matched our conditions. Not all shows got to 10 videos, but the average number of videos per show is 9.68, still very close to 10.
 
 ## Phase 2
-1250 list videos to get all videos statistics. (1 quota per list)
+Using Videos resource type of Youtube Data API, during Phase 2, we collecte some statistics for each video we found, these are:
+- views,
+- likes,
+- dislikes,
+- comments.
+
+Phase 2 was executed along with Phase 1 to check the number of comments, likes and dislikes and to avoid problems related to the Quota of Youtube Data API. We also used this step to check if all the statistics we looked for were defined for each video.
 
 ## Phase 3
-TODO: Exctact comment number for each video and use CommentThread to get all comments.
+TODO: Use CommentThread to get all comments.
