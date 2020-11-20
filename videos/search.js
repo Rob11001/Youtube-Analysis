@@ -33,6 +33,8 @@ extractData = async () => {
     try {
       let count = 0;
       let nextPageToken = undefined;
+      let tempShows = [];
+
       while(count < 10) {
       
         const response = await instance.request({
@@ -48,8 +50,6 @@ extractData = async () => {
         });
 
         nextPageToken = response.data.nextPageToken;
-
-        tempShows = [];
 
         for (let item of response.data.items) {
           const response = await instance.request({
@@ -105,8 +105,9 @@ extractData = async () => {
       }
 
     } catch (err) {
-      fs.writeFileSync(`./videos/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2)); 
+      fs.writeFileSync(`./videos/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2));
       console.log(err.message);
+      console.log(`Response data error: ${err.response.data.error.message}`);
       break;
     }
    
