@@ -74,16 +74,20 @@ extractData = async () => {
                 }
               });
               
-              tempShows.push({
-                id: video.id,
-                title: video.snippet.title,
-                publishedAt: video.snippet.publishedAt,
-                views: video.statistics.viewCount,
-                likes: video.statistics.likeCount,
-                dislikes: video.statistics.dislikeCount,
-                comments: video.statistics.commentCount
-              })
-              count++;
+              let found = tempShows.filter((el) => el.id === video.id).length;
+              
+              if(found == 0) {
+                tempShows.push({
+                  id: video.id,
+                  title: video.snippet.title,
+                  publishedAt: video.snippet.publishedAt,
+                  views: video.statistics.viewCount,
+                  likes: video.statistics.likeCount,
+                  dislikes: video.statistics.dislikeCount,
+                  comments: video.statistics.commentCount
+                })
+                count++;
+              }
              
             } catch (err) {
               const error = err.response.data.error;
@@ -96,12 +100,16 @@ extractData = async () => {
       
           if (count === 10)
             break;
-        
+
         }
 
         showsData[showName] = tempShows;
         
         console.log(`Show ${showName} data collected - #videos: ${count}`);
+        console.log(`nextPageToken: ${nextPageToken}`);
+        
+        if(nextPageToken == undefined)
+          break;
       }
 
     } catch (err) {
