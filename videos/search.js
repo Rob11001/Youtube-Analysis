@@ -45,7 +45,7 @@ extractData = async () => {
             q: showName,
             regionCode: 'US',
             type: 'video',
-            nextPageToken: nextPageToken,
+            pageToken: nextPageToken,
           }
         });
 
@@ -108,7 +108,7 @@ extractData = async () => {
         console.log(`Show ${showName} data collected - #videos: ${count}`);
         console.log(`nextPageToken: ${nextPageToken}`);
         
-        if(nextPageToken == undefined)
+        if (nextPageToken == undefined)
           break;
       }
 
