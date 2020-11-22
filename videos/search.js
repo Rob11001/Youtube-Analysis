@@ -115,7 +115,8 @@ extractData = async () => {
     } catch (err) {
       fs.writeFileSync(`./videos/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2));
       console.log(err.message);
-      console.log(`Response data error: ${err.response.data.error.message}`);
+      if(err.response)                                                            // To avoid undefined exception
+        console.log(`Response data error: ${err.response.data.error.message}`);
       break;
     }
    
