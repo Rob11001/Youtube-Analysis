@@ -156,4 +156,3 @@ extractData()
 
   })
   .catch(err => console.log(err));
-  
