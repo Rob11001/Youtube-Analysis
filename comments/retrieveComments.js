@@ -9,12 +9,12 @@ const datasetJsonFilePath = '../data/dataset.json';
 const commentsDatasetJsonFilePath = './commentsDataset.json';
 
 //    Only for DEBUG
-process.stdin.resume();
+/*process.stdin.resume();
 process.on('SIGINT', function() {
   saveData();
   process.exit();
 });
-
+*/
 
 let history;
 try {
@@ -39,9 +39,8 @@ const instance = axios.create({
 const commentsDataset = {};
 
 retrieveComments = async () => {
-  
+  console.log(`${showCounter},${showVideoCounter}`);
   for (let i = showCounter; i  < showNames.length; i++) {
-    
     let j;
     try {
       commentsDataset[showNames[i]] = [];
