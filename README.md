@@ -31,3 +31,5 @@ We started analyzing all data retrieved from the API to get some statistics and 
 ## Phase 3
 TODO: Use CommentThread to get all comments.
 Unavailable videos for now: 29
+Number of videos with urls: 451
+Number of collected urls: 3240
