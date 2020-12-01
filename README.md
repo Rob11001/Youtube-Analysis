@@ -27,9 +27,12 @@ All the collected data were stored as a dataset file (.csv) and as a JSON file.
 ## Phase 3: Videos data analysis
 We started analyzing all data retrieved from the API to get some statistics and charts about videos and compare that with the age group we found for each show in the previous phase.
 
+## Phase 4: URLs collection
+We retrieved all comments for each video collected previously and we have decided to collect only the comments containing url to avoid having useless data. To extract URLs we used regular expressions (credits to https://github.com/kevva/url-regex from which we took the Regex and adapted to our goal). 
 
-## Phase 3
-TODO: Use CommentThread to get all comments.
-Unavailable videos for now: 29
-Number of videos with urls: 451
-Number of collected urls: 3240
+During the retrieving phase some videos were not available anymore (removed or comments disabled), but considering that only 29 videos were unavailable we decided to ignore them and continue to collect data.
+The total number of collected urls is: 3240. (Number of videos with urls: 451)
+
+#TODO Phase 5
+
+Find an API to categorize the urls content.
