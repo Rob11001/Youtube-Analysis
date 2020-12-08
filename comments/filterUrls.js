@@ -8,6 +8,7 @@ const showNames = Object.keys(dataset);
 
 let filteredUrls = [];
 
+// Collects all yt urls
 showNames.forEach((show) => {
   dataset[show].forEach(video => {
     if (video.urls.length > 0)
@@ -15,6 +16,7 @@ showNames.forEach((show) => {
   });
 });
 
+// Removes duplicate in filtered urls
 filteredUrls = filteredUrls.reduce((unique, item) => {
   return unique.some((el) => el === item) ? unique : [...unique, item];
 }, []);

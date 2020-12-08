@@ -2,6 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 require('dotenv').config();
 
+// Global variables
 const dataApiKey = process.env.DATA_API_KEY;
 const historyFilePath = './history.json';
 const datasetJsonFilePath = './dataset.json';
@@ -19,6 +20,7 @@ let showCounter = history === null ? 0 : history.showCounter;
 const shows = fs.readFileSync('./data/topShows.txt', {encoding: 'utf-8'}).replace(/\r?\n$/, '').split(/\r?\n/);
 const showsData = {};
 
+// Prebuilt istance for axios get calls
 const instance = axios.create({
   baseURL: 'https://www.googleapis.com/youtube/v3/',
   params: {
@@ -35,8 +37,10 @@ extractData = async () => {
       let nextPageToken = undefined;
       let tempShows = [];
 
+      // To collect the first ten videos with comments
       while(count < 10) {
       
+        // Search YT API to collect videos
         const response = await instance.request({
           url: 'search',
           params: {
@@ -52,6 +56,7 @@ extractData = async () => {
         nextPageToken = response.data.nextPageToken;
 
         for (let item of response.data.items) {
+          // Videos YT API to collect statistics for each video
           const response = await instance.request({
             url: 'videos',
             params: {
@@ -64,7 +69,7 @@ extractData = async () => {
           if (video.statistics.commentCount > 0 && video.statistics.viewCount && video.statistics.likeCount && video.statistics.dislikeCount && video.statistics.commentCount) {
             
             try {
-              
+              // CommentThreads YT API to verify the real precence of comments
               const response = await instance.request({
                 url: 'commentThreads',
                 params: {
@@ -74,7 +79,7 @@ extractData = async () => {
                 }
               });
               
-              let found = tempShows.filter((el) => el.id === video.id).length;
+              let found = tempShows.filter((el) => el.id === video.id).length;  // To avoid duplicate
               
               if(found == 0) {
                 tempShows.push({
@@ -92,7 +97,7 @@ extractData = async () => {
             } catch (err) {
               const error = err.response.data.error;
               if(error.code == 403 && !error.message.includes('disabled comments')) {
-                throw err;
+                throw err; // Propagation of the error to stop the execution
               }
             }
 
@@ -108,16 +113,16 @@ extractData = async () => {
         console.log(`Show ${showName} data collected - #videos: ${count}`);
         console.log(`nextPageToken: ${nextPageToken}`);
         
-        if (nextPageToken == undefined)
+        if (nextPageToken == undefined)   // Pages ended
           break;
       }
 
     } catch (err) {
-      fs.writeFileSync(`./videos/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2));
+      fs.writeFileSync(`./videos/${historyFilePath}`, JSON.stringify({showCounter: i}, null, 2)); // Save the current show
       console.log(err.message);
       if(err.response)                                                            // To avoid undefined exception
         console.log(`Response data error: ${err.response.data.error.message}`);
-      break;
+      break; // To skip for cycle
     }
    
   }
@@ -126,6 +131,8 @@ extractData = async () => {
 extractData()
   .then(() => {
 
+  // Saving JSON and cvs files
+  
   let dataset;
   try {
     dataset = require(datasetJsonFilePath);

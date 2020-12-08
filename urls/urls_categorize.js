@@ -6,7 +6,7 @@ let driver;
 const prova = "startmovieschannel.blogspot.com/tt4823776/.html";
 
 
-
+// Initialize Builder with Chrome Browser
 const initialize = async () => {
     driver = await new Builder().forBrowser("chrome").build();
 }

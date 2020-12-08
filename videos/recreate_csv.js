@@ -6,6 +6,7 @@ const datasetCsvFilePath = './videos/dataset.csv';
 const showsData = require(datasetJsonFilePath);
 const keys = ['id', 'title', 'publishedAt','views', 'likes', 'dislikes', 'comments'];
 
+// Used to solve a problem in cvs file
 
 const fd = fs.openSync(datasetCsvFilePath, 'w');
   Object.keys(showsData).forEach(key => {

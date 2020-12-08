@@ -29,6 +29,7 @@ let showCounter = history === null ? 0 : history.showCounter;
 let showVideoCounter = history === null ? 0 : history.showVideoCounter;
 let unavailableVideos = 0;
 
+// Axios pre-built istance
 const instance = axios.create({
   baseURL: 'https://www.googleapis.com/youtube/v3/',
   params: {
@@ -55,6 +56,7 @@ retrieveComments = async () => {
           let response;
 
           try {
+            // CommentThreads YT API
             response = await instance.request({
               url: 'commentThreads',
               params: {
@@ -71,7 +73,7 @@ retrieveComments = async () => {
 
             if (err.response) {     // To avoid undefined exception
               const message = err.response.data.error.message;
-              if (err.response.status == 404 || message.includes('disabled comments')) {
+              if (err.response.status == 404 || message.includes('disabled comments')) {  // To handle the possibility that some videos have been removed
                 unavailableVideos++;
                 break;
               } else {
@@ -79,7 +81,7 @@ retrieveComments = async () => {
                 throw err;
               }        
             }
-            throw err;
+            throw err;  //To propagate error 
           }
           
           nextPageToken = response.data.nextPageToken;
@@ -92,7 +94,7 @@ retrieveComments = async () => {
             const topLevelAndReplies = replies.map((comment) => comment.snippet.textDisplay).concat([topLevelComment]); // grab all comments
 
             topLevelAndReplies.forEach((comment, index) => {
-              const commentUrls = comment.match(urlRegex);
+              const commentUrls = comment.match(urlRegex);    // Regex check
               if (commentUrls) {
                 tempUrls = tempUrls.concat(commentUrls);
                 tempComments.push(topLevelAndReplies[index]);    // saves the unmodified comment
