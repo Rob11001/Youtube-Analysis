@@ -1,5 +1,4 @@
 const {Builder, By, until} = require('selenium-webdriver');
-const CaptchaSolver = require('captcha-solver')
 
 const url = "https://sitereview.bluecoat.com/";
 const sites = require('../comments/filtered.json');
@@ -76,4 +75,4 @@ initialize()
     
     })
     .catch(err => console.log(err))
-    .finally(() => {});
+    .finally(() => {await driver.close()});
