@@ -1,21 +1,20 @@
 const {Builder, By, until} = require('selenium-webdriver');
 
 const url = "https://sitereview.bluecoat.com/";
+const sites = require('../comments/filtered.json');
+
 let driver;
-
-const prova = "startmovieschannel.blogspot.com/tt4823776/.html";
-
 
 // Initialize Builder with Chrome Browser
 const initialize = async () => {
     driver = await new Builder().forBrowser("chrome").build();
 }
 
-const categorize = async () => {
+const categorize = async (site) => {
     await driver.get(url);
     let input = await driver.findElement(By.id("txtUrl"));
     let button = await driver.findElement(By.id("btnLookup"));
-    await input.sendKeys(prova);
+    await input.sendKeys(site);
     await button.click();
     let categories;
     
@@ -43,14 +42,8 @@ const categorize = async () => {
 /** Generalizzare categorize per applicarla a tutti gli urls */
 
 initialize()
-    .then(() => {
-        categorize()
-            .then((webEls) => {
-                console.log(webEls);
-            })
-            .finally(async () => {
-                await driver.close();
-            })
-            .catch(err => console.log(err));
-        })
+    .then(async () => {
+        
+    
+    })
     .catch(err => console.log(err));
