@@ -1,3 +1,23 @@
+/**
+ * Script to collect the first most relevant 10 videos for each show and save their statistics in a json file and a csv file
+ * 
+ * json structure:
+ *    {
+ *      "showName": [
+ *                    {
+                        "id": 'videoId',
+                        "title": 'Title of the video',
+                        "publishedAt": 'Date of publication',
+                        "views": '# of views',
+                        "likes": '# of likes',
+                        "dislikes": '# of dislikes',
+                        "comments": '# of comments'
+                      },
+                      ...
+ *                  ]
+ *    }
+ * 
+ */
 const axios = require('axios');
 const fs = require('fs');
 require('dotenv').config();

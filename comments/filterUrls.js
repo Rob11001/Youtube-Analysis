@@ -1,3 +1,6 @@
+/**
+ * Script to filter urls removing yt-urls and duplicate
+ */
 const fs = require('fs');
 const commentsDatasetJsonFilePath = './commentsDataset.json';
 

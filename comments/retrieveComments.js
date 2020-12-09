@@ -1,3 +1,23 @@
+/**
+ *  Script to retrieve comments with urls from videos in dataset.json and save them in commentsDataset.json
+ *  
+ *  json structure:
+        {
+          'ShowName': [
+            {
+              "videoId": 'videoId',
+              "comments": [
+                ...
+              ],
+              "urls": [
+                ...
+              ]
+            },
+          ]
+        }
+ * 
+ * 
+ */
 const axios = require('axios');
 const fs = require('fs');
 const urlRegex = require('./regex');
