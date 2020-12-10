@@ -1,7 +1,10 @@
 const {Builder, By, until} = require('selenium-webdriver');
+const fs = require('fs');
 
 const url = "https://sitereview.bluecoat.com/";
-const sites = require('../comments/filtered.json');
+const videosUrlsDs = require('../comments/filtered.json');
+const categorizedUrlsFilePath = './urls/categorizedUrls.json';
+const categoriesForSiteFilePath = './urls/categoriesForSite.json';
 
 let driver;
 
@@ -22,13 +25,13 @@ const needsCaptcha = async (site) => {
 const categorize = async (site) => {
     await driver.get(url);
     
-    await driver.sleep(1000);   // aspetta gli eventuali caricamenti della pagina    
+    await driver.sleep(2000);   // aspetta gli eventuali caricamenti della pagina    
     let input = await driver.findElement(By.id("txtUrl"));
     let button = await driver.findElement(By.id("btnLookup"));
     await input.sendKeys(site);
     await button.click();
 
-    await driver.sleep(1000);
+    await driver.sleep(2000);
     if (await needsCaptcha(site)) {
         try { await driver.wait(until.elementLocated(By.id("txtUrl")), 10000); }
         catch(e) {}
@@ -45,7 +48,7 @@ const categorize = async (site) => {
         } 
         else {
             await buttonsShortener[0].click();
-            await driver.sleep(1000);
+            await driver.sleep(2000);
 
             // await driver.wait(until.elementLocated(By.css("div.panel-body *.clickable-category")), 5000) vedi sopra
             categories = await driver.findElements(By.css("div.panel-body *.clickable-category"));
@@ -57,16 +60,28 @@ const categorize = async (site) => {
 
 
 /** Generalizzare categorize per applicarla a tutti gli urls */
-
+let categoriesForSite;
+try {
+    categoriesForSite = require('./categoriesForSite.json');
+} catch (err) {
+    categoriesForSite = {};
+}
 initialize()
-    .then(async () => {
-        const showNames = Object.keys(sites);
-        
-        for (let show of showNames) {
-            for (let site of sites[show]) {
+    .then(async () => {        
+        for (let j = 0; j < videosUrlsDs.length; j++) {
+            let video = videosUrlsDs[j];
+            console.log(`Video ${j + 1}/${videosUrlsDs.length + 1}`);
+            for (let i = 0; i < video.urls.length; i++) {
+                let site = video.urls[i];
                 try {
-                    let siteCategories = await categorize(site);
-                    console.log(`${site}: ${siteCategories}`);
+                    if (categoriesForSite[site] == undefined) {
+                        let siteCategories = await categorize(site);
+                        categoriesForSite[site] = siteCategories;
+                    }
+
+                    video.urls[i] = {url: site, categories: categoriesForSite[site]};
+                                        
+                    console.log(`${site}: ${categoriesForSite[site]}`);
                 } catch (err) {
                     console.log(`Error for site ${site}, message: ${err.message}`);
                 }
@@ -75,4 +90,8 @@ initialize()
     
     })
     .catch(err => console.log(err))
-    .finally(() => {await driver.close()});
+    .finally(async () => {
+        fs.writeFileSync(categorizedUrlsFilePath, JSON.stringify(videosUrlsDs, null, 2), {encoding: 'utf-8'});
+        fs.writeFileSync(categoriesForSiteFilePath, JSON.stringify(categoriesForSite, null, 2), {encoding: 'utf-8'});
+        await driver.close()
+    });
