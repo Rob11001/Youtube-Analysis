@@ -21,5 +21,11 @@ const instance = axios.create({
 });
 
 const saveData = () => {
-    // Save data
+    fs.writeFileSync('./urls/urls.json', JSON.stringify(urlsList, null, 2), {encoding: 'utf-8'});
+};
+
+const analyze = (url) => {
+    // Gestire il problema della quota
+    // Prima chiamata /urls per l'id (POST: url: url)
+    // Seconda chiamata /analyses/{id} (GET)
 };
