@@ -74,7 +74,7 @@ initialize()
             for (let i = 0; i < video.urls.length; i++) {
                 let site = video.urls[i];
                 try {
-                    if (categoriesForSite[site] == undefined) {
+                    if (categoriesForSite[site] == undefined || categoriesForSite[site].length == 0) {
                         let siteCategories = await categorize(site);
                         categoriesForSite[site] = siteCategories;
                     }
