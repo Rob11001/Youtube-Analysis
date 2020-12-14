@@ -40,7 +40,7 @@ const computeThreat = (stats) => {
 const virus_total_key = process.env.VIRUS_TOTAL_API_KEY;
 
 const analysesIds = {};
-
+let waitingMultiplier = 1;
 const analyze = async (url) => {
 
     try {
@@ -58,6 +58,7 @@ const analyze = async (url) => {
             );
 
             analysesId = urlsResponse.data.data.id;
+            waitingMultiplier = 1;
             console.log(`Analyses id for ${url}: ${analysesId}`);
         }
 
@@ -72,8 +73,9 @@ const analyze = async (url) => {
             return computeThreat(analyses.attributes.stats);
         } else {
             console.log(`Analyses for ${url} not completed, waiting...`);
-            await sleep(1500);
-            analysesId[url] = analysesId;
+            await sleep(3000 * waitingMultiplier);
+            analysesIds[url] = analysesId;
+            waitingMultiplier += 0.5;
             return await analyze(url);
         }
 
