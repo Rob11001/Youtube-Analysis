@@ -33,7 +33,12 @@ We retrieved all comments for each video collected previously and we have decide
 During the retrieving phase some videos were not available anymore (removed or comments disabled), but considering that only 29 videos were unavailable we decided to ignore them and continue to collect data.
 The total number of collected urls is: 3240. (Number of videos with urls: 451)
 
-#TODO Phase 5
+## Phase 5: URLs categorization
+We used [Symantec Sitereview](https://sitereview.bluecoat.com/#/) to categorize all the unique URLs (620) collected in the previous phase. Some of them could not be categorize from Symantec so we categorized them manually.
+We categorized the URLs in 55 different topics.
+To automate the queries to Symantec we created a script in Node.js using selenium web driver.
 
-Find an API to categorize the urls content. 620 unique urls collected.
-Potential site: https://sitereview.bluecoat.com/#/
+
+## Phase 6: Threat scanning
+After categorizing all the URLs we used VirusTotal API to analyze the URLs looking for the malicious or suspicious ones.
+All the collected URLs were 'Harmless'.
