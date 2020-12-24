@@ -1,8 +1,5 @@
 # Youtube Analysis
 
-123 shows.
-10000 quota per day.
-
 ## Phase 1: Data Collection
 First, we collected the 123 top children's shows based on [Ranker](https://www.ranker.com/crowdranked-list/my-favorite-cartoons-of-all-time?ref=search), a website in which users can rank shows and films, this list in particular has 3.2m votes
 from 194.0k voters and was recently updated.
